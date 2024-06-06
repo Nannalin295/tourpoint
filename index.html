@@ -1,0 +1,124 @@
+<html
+lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My first leaflet</title>
+</head>
+    <!-- link css leaflet-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <!--link js leaflet -->
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+ integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+ crossorigin=""></script>
+ <style>
+    body {
+padding: 0;
+margin: 0;
+}
+
+html,
+body,
+#map {
+height: 100%;
+width: 100%;
+}
+</style>
+
+
+<body>
+    <!--แบ่งส่วนหน้าจอ-->
+    <div id = "map" style = "width:100% ; height: 100%"> </div>
+    <script>
+        //set view map 
+        var map = L.map('map').setView([14.320072975077476, 100.54808643060149], 10);
+
+        //import Based map 
+        var OSM = L.tileLayer('https://tile.openstreetmap.de/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> contributors'
+        }).addTo(map);
+
+        var stadia = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+            minZoom: 0,
+            maxZoom: 20,
+            attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            ext: 'png'
+        }).addTo(map);
+
+        var Esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+        }).addTo(map);
+
+        var baseLayers = {
+            "OSM" : OSM,
+            "stadia" : stadia,
+            "Esri" : Esri,
+        }
+        L.control.layers(baseLayers).addTo(map);
+    
+         //การเพิ่มข้อมูลลงบนแผนที่ 
+          var point = L.marker([14.320072975077476, 100.54808643060149],{
+          draggable: true,  //สามารเลื่อนจุดต่างๆได้ 
+          title: 'จังหวัดพระนครศรีอยุธยา', //ชื่อจุด
+          opacity: 1.5   //ความทึบแสงของจุด 
+          }).addTo(map);
+
+     //เพิ่มข้อมูลลงในแผนที่
+    point.bindPopup("<b>จังหวัดพระนครศรีอยุธยา</b>")
+     .openPopup();
+
+     //แสดงข้อมูลหลายจุด
+     var swu = [
+     ["Wat Yai Chai Mongkhon<br>วัดใหญ่ชัยมงคล", 14.345641517714537, 100.59286921901723],
+     ["Dinso Bridge<br>สะพานป่าดินสอ", 14.348265958079615, 100.56179125763704],
+     ["Wat Chaiwatthanaram<br>วัดไชยวัฒนาราม", 14.343162785608717, 100.54241679388868],
+     ["Bang Pa-In Palace<br>พระราชวังบางปะอิน", 14.232856582310392, 100.57964625155894],
+     ["Wat Mahathat<br>วัดมหาธาตุ", 14.357110586399967, 100.56772577112845],
+     ["Ayutthaya Elephant Palace & Royal Kraal<br>วังช้างอยุธยา แล เพนียด", 14.35235093801265, 100.55890842880088],
+     ["Wat Niwet Thammaprawat Ratchaworawihan<br>วัดนิเวศธรรมประวัติราชวรวิหาร", 14.231671078232928, 100.5763987287983],
+     ["Wat Phra Si Sanphet<br>วัดพระศรีสรรเพชญ์", 14.355920961394618, 100.55874576876042],
+     ["Wat Ratcha Burana<br>วัดราชบูรณะ", 14.3588863724588, 100.56771674785378],
+     ["Maharat Buddhist Park, Luang Pu Thuat<br>พุทธอุทยานมหาราช", 14.531477513430188, 100.49968826793844],
+ ];
+
+ //เปลี่ยน icon
+ var greenIcon = L.icon({
+     iconUrl: 'https://uxwing.com/wp-content/themes/uxwing/download/emoji-emoticon/smiley-icon.png', //คัดลอกที่อยู่ของรูปภาพมาใส่
+    //shadowUrl: 'https://leafletjs.com/examples/custom-icons/leaf-shadow.png', 
+    
+     iconSize: [50, 50], // size of the icon
+    //shadowSize: [50, 64], // size of the shadow ใหญ่กว่าไอคอน 
+     iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+    //shadowAnchor: [4, 62], // the same for the shadow
+     popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+ });
+
+ for (var i = 0; i < swu.length; i++) {
+    
+     marker = new L.marker([swu[i][1], swu[i][2]], {icon: greenIcon})
+     .bindPopup(swu[i][0])
+     .addTo(map);
+ }
+
+ //description/legend คำอธิบาย 
+ var legend = L.control({position: "bottomright"}); //แสดงที่มุมขวาบน
+ legend.onAdd = function(map) {              //แสดงผล
+     var div = L.DomUtil.create("div", "legend");     //แสดงคำ
+     div.innerHTML = 
+     '<p><b>10 สถานที่ท่องเที่ยวจังหวัดพระนครศรีอยุธยา</b></p><hr>' +      //คำว่าศรีนครินทรวิโรฒเป็นตัวหนา<b> และมีเส้นขั้น<hr>
+     'Created by Nannalin Sriruean <br>' +    //สร้างโดยใส่ชื่อตัวเอง 
+     'ID: 64103010295<br>'+      //ใส่รหัส 
+     '<img src="https://unity.swu.ac.th/wp-content/uploads/2020/07/SWU_Logo_EN_Color.png" width = 20%>';   //ใส่ตรามหาวิทยาลัย
+     return div};
+ legend.addTo(map);
+
+
+
+</script>
+    
+</body>
+</html>
